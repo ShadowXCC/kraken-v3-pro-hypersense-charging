@@ -1,0 +1,21 @@
+# Optional, and NOT needed if you run kraken-hypersense-charging.service: the daemon already
+# notices a resume by itself (CLOCK_BOOTTIME runs on while the machine is suspended and
+# CLOCK_MONOTONIC does not, so the gap between them gives it away) and re-checks the gate.
+#
+# Enable this one only if you use 'once' by hand instead of running the daemon:
+#   sudo systemctl enable kraken-hypersense-charging-resume.service
+#
+# Running both means two borrows of the control interface after every resume, a few seconds apart.
+
+[Unit]
+Description=Re-assert the Kraken V3 Pro haptics gate after resume
+After=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+
+[Service]
+Type=oneshot
+# Give the driver time to reopen its control channel and the headset time to re-link.
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/local/sbin/kraken-hypersense-charging once --if-charging
+
+[Install]
+WantedBy=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target

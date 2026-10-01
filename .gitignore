@@ -1,0 +1,7 @@
+*.o
+/kraken-hypersense-charging
+/tests/test_config
+/tests/test_frame
+/tests/test_gate
+/tests/test_sysfs
+/tests/test_trigger

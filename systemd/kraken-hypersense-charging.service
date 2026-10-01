@@ -1,0 +1,32 @@
+[Unit]
+Description=Keep Razer Kraken V3 Pro HyperSense haptics working while charging
+Documentation=https://github.com/ShadowXCC/kraken-v3-pro-hypersense-charging
+Documentation=file:/usr/local/share/doc/kraken-hypersense-charging/README.md
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/kraken-hypersense-charging daemon
+Restart=always
+RestartSec=5
+
+# It needs root: the driver's sysfs attributes are root-only, and moving the dongle's control
+# interface between drivers means writing to /sys/bus/usb/drivers/*/{bind,unbind}.
+# Note that /sys must stay writable, so ProtectKernelTunables is deliberately not set, and
+# /dev/bus/usb must stay visible, so PrivateDevices is deliberately not set.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target
